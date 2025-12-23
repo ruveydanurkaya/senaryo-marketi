@@ -11,25 +11,34 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const auth_module_1 = require("./auth/auth.module");
 const scripts_module_1 = require("./scripts/scripts.module");
-const user_entity_1 = require("./entities/user.entity");
-const script_entity_1 = require("./entities/script.entity");
-const genre_entity_1 = require("./entities/genre.entity");
-const order_entity_1 = require("./entities/order.entity");
+const dbConfig = process.env.DATABASE_URL
+    ? {
+        type: 'postgres',
+        url: process.env.DATABASE_URL,
+        autoLoadEntities: true,
+        synchronize: true,
+        ssl: {
+            rejectUnauthorized: false,
+        },
+    }
+    : {
+        type: 'sqlite',
+        database: 'db.sqlite',
+        autoLoadEntities: true,
+        synchronize: true,
+    };
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            typeorm_1.TypeOrmModule.forRoot({
-                type: 'sqlite',
-                database: 'market.db',
-                entities: [user_entity_1.User, script_entity_1.Script, genre_entity_1.Genre, order_entity_1.Order],
-                synchronize: true,
-            }),
+            typeorm_1.TypeOrmModule.forRoot(dbConfig),
             auth_module_1.AuthModule,
             scripts_module_1.ScriptsModule,
         ],
+        controllers: [],
+        providers: [],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

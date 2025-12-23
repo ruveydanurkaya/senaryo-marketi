@@ -6,11 +6,12 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { User } from '../entities/user.entity';
 import { JwtStrategy } from './jwt.strategy';
+import { Order } from '../entities/order.entity';
 
 @Module({
   imports: [
     // Auth modülü içinde User tablosunu kullanacağımızı belirtiyoruz.
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User,Order]),
 
     // Passport kütüphanesini (Authentication için standart) dahil ediyoruz.
     PassportModule,
