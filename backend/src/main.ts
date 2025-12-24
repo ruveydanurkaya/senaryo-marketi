@@ -1,23 +1,21 @@
-// Dosya: src/main.ts
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Frontend'den gelen isteklere izin ver (CORS)
+  // 1. CORS AYARI: Frontend'in (Vercel) bağlanabilmesi için izin veriyoruz
   app.enableCors({
-    origin: '*', // Tüm sitelerden gelen isteklere izin ver (En kolayı)
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    origin: true, // Gelen isteğin kaynağına (Vercel) güven
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
 
-  // Gelen verileri kontrol et (DTO doğrulama)
-  app.useGlobalPipes(new ValidationPipe());
+  // 2. PORT AYARI: Koyeb'in uygulamayı görebilmesi için '0.0.0.0' ŞARTTIR!
+  // Bunu yazmazsak uygulama sadece kendine çalışır, Koyeb "No active service" der.
+  const port = process.env.PORT || 3000;
+  await app.listen(port, '0.0.0.0');
 
-  await app.listen(3000)
-
-  console.log(`Backend 3000 portunda çalışıyor!`);
+  console.log(`Backend ${port} portunda ve 0.0.0.0 adresinde yayında!`);
 }
 bootstrap();
