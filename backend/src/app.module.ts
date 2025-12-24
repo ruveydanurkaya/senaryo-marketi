@@ -17,7 +17,7 @@ import { Order } from './entities/order.entity';
         ssl: {
             rejectUnauthorized: false, // 3. Render/Cloud veritabanları için bu SSL ayarı ŞART
             },
-        entities: [User, Script, Category, Order],
+        entities: [User, Script, Genre , Order],
     }),
     AuthModule,
     ScriptsModule,

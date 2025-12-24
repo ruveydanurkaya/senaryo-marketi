@@ -22,10 +22,14 @@ exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
             typeorm_1.TypeOrmModule.forRoot({
-                type: 'sqlite',
-                database: 'market.db',
-                entities: [user_entity_1.User, script_entity_1.Script, genre_entity_1.Genre, order_entity_1.Order],
+                type: 'postgres',
+                url: process.env.DATABASE_URL,
+                autoLoadEntities: true,
                 synchronize: true,
+                ssl: {
+                    rejectUnauthorized: false,
+                },
+                entities: [user_entity_1.User, script_entity_1.Script, genre_entity_1.Genre, order_entity_1.Order],
             }),
             auth_module_1.AuthModule,
             scripts_module_1.ScriptsModule,
