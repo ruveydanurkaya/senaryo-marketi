@@ -16,7 +16,8 @@ import { Order } from './entities/order.entity';
         synchronize: true, // Tabloları otomatik oluşturur (Proje ödevi için ideal)
         ssl: {
             rejectUnauthorized: false, // 3. Render/Cloud veritabanları için bu SSL ayarı ŞART
-        },
+            },
+        entities: [User, Script, Category, Order],
     }),
     AuthModule,
     ScriptsModule,
