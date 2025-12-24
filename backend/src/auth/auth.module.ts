@@ -6,26 +6,17 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { User } from '../entities/user.entity';
 import { JwtStrategy } from './jwt.strategy';
-import { Order } from '../entities/order.entity';
 
 @Module({
   imports: [
-    // Auth modülü içinde User tablosunu kullanacağımızı belirtiyoruz.
-    TypeOrmModule.forFeature([User,Order]),
-
-    // Passport kütüphanesini (Authentication için standart) dahil ediyoruz.
+    TypeOrmModule.forFeature([User]),
     PassportModule,
-
-    // JWT modülünü konfigüre ediyoruz.
     JwtModule.register({
-      secret: 'GIZLI_ANAHTAR_BURAYA', // Token'ı şifrelerken kullanılan gizli anahtar. .env dosyasında olmalı!
-      signOptions: { expiresIn: '60m' }, // Token 60 dakika sonra geçersiz olsun.
+      secret: 'GIZLI_ANAHTAR_BURAYA',
+      signOptions: { expiresIn: '60m' },
     }),
   ],
-  // Bu modülde kullanılacak servisler ve stratejiler
   providers: [AuthService, JwtStrategy],
-
-  // Dışarıdan erişilebilecek endpoint'ler (URL'ler)
   controllers: [AuthController],
 })
 export class AuthModule {}

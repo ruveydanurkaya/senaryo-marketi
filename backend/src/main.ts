@@ -6,20 +6,17 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // --- CORS AYARI (Hatanın Çözümü) ---
+  // Frontend'den gelen isteklere izin ver (CORS)
   app.enableCors({
-    origin: '*', // Yıldız (*) demek: "Kim gelirse gelsin kabul et" demektir.
+    origin: '*', // Tüm sitelerden gelen isteklere izin ver (En kolayı)
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    allowedHeaders: 'Content-Type, Accept, Authorization',
+    credentials: true,
   });
 
-  // Gelen verileri kontrol et
+  // Gelen verileri kontrol et (DTO doğrulama)
   app.useGlobalPipes(new ValidationPipe());
 
-  // --- PORT AYARI (Bulut Uyumluluğu İçin) ---
-  // Koyeb veya Render kendi portunu atamak ister (process.env.PORT).
-  // Eğer bulamazsa 3000'i kullanır.
-  await app.listen(process.env.PORT || 3000);
-  console.log(`Backend çalışıyor!`);
+  await app.listen(3000);
+  console.log(`Backend 3000 portunda çalışıyor!`);
 }
 bootstrap();

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://senaryo-marketi-rnk.koyeb.app' , // Backend adresi
+  baseURL: 'https://senaryo-marketi-rnk.koyeb.app', // Backend adresi
 });
 
 // Her istekte LocalStorage'daki tokenı ekle (Oturum yönetimi)
