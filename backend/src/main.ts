@@ -16,7 +16,8 @@ async function bootstrap() {
   // Gelen verileri kontrol et (DTO doğrulama)
   app.useGlobalPipes(new ValidationPipe());
 
-  await app.listen(3000);
+  await app.listen(3000)
+
   console.log(`Backend 3000 portunda çalışıyor!`);
 }
 bootstrap();
