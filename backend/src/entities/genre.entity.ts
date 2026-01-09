@@ -9,9 +9,6 @@ export class Genre {
   @Column()
   name: string;
 
-  // İLİŞKİ: Bir türde birden çok senaryo olabilir (M:N)
-  // Burada @JoinTable kullanmıyoruz çünkü Script tarafında kullandık.
-  // Sadece Script entity'sindeki 'genres' alanını işaret ediyoruz.
   @ManyToMany(() => Script, (script) => script.genres)
   scripts: Script[];
 }

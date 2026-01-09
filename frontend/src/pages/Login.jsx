@@ -6,35 +6,31 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
-  const [role, setRole] = useState('writer'); // Varsayılan rol: Senarist seçili oluyor.
-  const [isRegister, setIsRegister] = useState(false); // Ekranda "Giriş" mi yoksa "Kayıt" formu mu gösterilecek?
-  const navigate = useNavigate(); // Sayfa yönlendirmesi için
+  const [role, setRole] = useState('writer');
+  const [isRegister, setIsRegister] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Sayfanın yenilenmesini engelle
-    const endpoint = isRegister ? '/auth/register' : '/auth/login'; // Hangi URL'e istek atacağız?
+    e.preventDefault();
+    const endpoint = isRegister ? '/auth/register' : '/auth/login';
 
-    // Backend'e gidecek veri paketi
     const payload = isRegister
-      ? { email, password, username, role } // Kayıt ise hepsini gönder
-      : { email, password };                // Giriş ise sadece bunları gönder
+      ? { email, password, username, role }
+      : { email, password };
 
     try {
-      const res = await api.post(endpoint, payload); //API İSTEĞİ
+      const res = await api.post(endpoint, payload);
 
       if (isRegister) {
-        alert('Kayıt başarılı! Şimdi giriş yapabilirsiniz.'); // Kayıt başarılıysa kullanıcıyı giriş moduna döndür.
-        setIsRegister(false); // Giriş moduna dön
+        alert('Kayıt başarılı! Şimdi giriş yapabilirsiniz.');
+        setIsRegister(false);
       } else {
-        // --- BAŞARILI GİRİŞ ---
-        //Token'ı kaydet ve yönlendir.
         localStorage.setItem('token', res.data.access_token);
         localStorage.setItem('role', res.data.role);
 
-        // Kullanıcının rolüne göre ilgili sayfaya yönlendir.
         if (res.data.role === 'writer') navigate('/writer');
         else if (res.data.role === 'admin') navigate('/admin');
-        else navigate('/market'); //Yönetmen ise markete gider.
+        else navigate('/market');
       }
     } catch (err) {
       console.error(err);
@@ -47,7 +43,6 @@ export default function Login() {
       <h2 style={{textAlign:'center'}}>{isRegister ? 'Kayıt Ol' : 'Giriş Yap'}</h2>
 
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-        {/* Sadece KAYIT modunda görünen alanlar */}
         {isRegister && (
           <input
             placeholder="Kullanıcı Adı"
@@ -76,7 +71,6 @@ export default function Login() {
           style={{padding: 8}}
         />
 
-        {/* Rol Seçimi (Kayıtta) */}
         {isRegister && (
           <div style={{display:'flex', gap: 10, alignItems:'center'}}>
             <label>Rol Seç:</label>
@@ -93,7 +87,6 @@ export default function Login() {
         </button>
       </form>
 
-      {/* Mod Değiştirme Butonu */}
       <button
         onClick={() => setIsRegister(!isRegister)}
         style={{ marginTop: 10, background: 'none', border: 'none', color: 'blue', cursor: 'pointer', width: '100%' }}

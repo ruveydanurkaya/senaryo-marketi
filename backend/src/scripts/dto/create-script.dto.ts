@@ -2,16 +2,17 @@
 import { IsString, IsNumber, IsArray, IsNotEmpty } from 'class-validator';
 
 export class CreateScriptDto {
-  @IsNotEmpty() //Başlık boş gönderilemez
+  @IsNotEmpty()
+
   @IsString()
   title: string;
 
   @IsString()
-  content: string; // Senaryonun özeti
+  content: string;
 
   @IsNumber()
-  price: number; // Fiyat
+  price: number;
 
-  @IsArray() // @IsArray: Birden fazla tür seçilebileceği için dizi (array) formatında ID'ler bekliyoruz.
+  @IsArray()
   genreIds: number[];
 }

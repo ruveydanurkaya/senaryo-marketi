@@ -1,23 +1,36 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Get, Put, Param, UseGuards, Request, ForbiddenException } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 
-// Bu controller 'http://localhost:3000/auth' adresini dinler.
 @Controller('auth')
 export class AuthController {
-  // Service'i kullanabilmek için Constructor'da çağırıyoruz (Dependency Injection).
   constructor(private authService: AuthService) {}
 
-  // POST İsteği: http://localhost:3000/auth/register
   @Post('register')
   register(@Body() body: any) {
-    // Gelen veriyi (body) direkt servise gönderiyoruz.
     return this.authService.register(body);
   }
 
-  // POST İsteği: http://localhost:3000/auth/login
   @Post('login')
   login(@Body() body: any) {
-    // Giriş yapma isteğini servise iletiyoruz.
     return this.authService.login(body);
+  }
+  @UseGuards(AuthGuard('jwt'))
+  @Get('users')
+  async getUsers(@Request() req) {
+    if (req.user.role !== 'admin') {
+      throw new ForbiddenException('Kullanıcı listesini sadece Admin görebilir!');
+    }
+    return this.authService.getAllUsers();
+  }
+  @UseGuards(AuthGuard('jwt'))
+  @Put('promote/:id')
+  async promoteUser(@Param('id') id: number, @Request() req) {
+
+    if (req.user.role !== 'admin') {
+      throw new ForbiddenException('Yetki verme işlemini sadece Admin yapabilir!');
+    }
+
+    return this.authService.promoteToAdmin(Number(id));
   }
 }

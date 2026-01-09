@@ -10,27 +10,22 @@ export class ScriptsController {
   @Get()
   getAll() { return this.scriptsService.findAll(); }
 
-  // Veritabanına örnek türler eklemek için
   @Get('seed')
   seed() { return this.scriptsService.seedGenres(); }
 
-  // Tür listesini almak için
   @Get('genres')
   getGenres() { return this.scriptsService.getAllGenres(); }
 
-  // Sadece Admin'in yapması gereken bir iş ama şimdilik açık
   @Post('genres')
   addGenre(@Body('name') name: string) { return this.scriptsService.createGenre(name); }
 
-  // --- AŞAĞIDAKİLER SADECE GİRİŞ YAPMIŞ KULLANICILAR İÇİNDİR ---
 
-  @UseGuards(AuthGuard('jwt')) //Giriş kontrolü
+  @UseGuards(AuthGuard('jwt'))
   @Post()
   create(@Body() dto: CreateScriptDto, @Request() req) {
     return this.scriptsService.create(dto, req.user.userId);
   }
 
-  // YENİ EKLENEN GÜNCELLEME ENDPOINT'İ
   @UseGuards(AuthGuard('jwt'))
   @Put(':id')
   update(@Param('id') id: number, @Body() dto: CreateScriptDto, @Request() req) {
@@ -38,13 +33,13 @@ export class ScriptsController {
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Get('my-scripts') // Sadece benim senaryolarım
+  @Get('my-scripts')
   getMyScripts(@Request() req) {
     return this.scriptsService.findByWriter(req.user.userId);
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Delete(':id') //ID ile silme işlemi
+  @Delete(':id')
   deleteScript(@Param('id') id: number, @Request() req) {
     return this.scriptsService.remove(id, req.user.userId);
   }

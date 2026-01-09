@@ -3,13 +3,12 @@ import api from '../api';
 import { useNavigate } from 'react-router-dom';
 
 export default function WriterPanel() {
-    //Form State'leri
   const [title, setTitle] = useState('');
   const [price, setPrice] = useState('');
   const [content, setContent] = useState('');
-  const [selectedGenres, setSelectedGenres] = useState([]); //Çoklu seçim dizisi
+  const [selectedGenres, setSelectedGenres] = useState([]);
 
-  const [editingId, setEditingId] = useState(null); // Düzenleme modunda mıyız? (ID tutar)
+  const [editingId, setEditingId] = useState(null);
 
   const [allGenres, setAllGenres] = useState([]);
   const [myScripts, setMyScripts] = useState([]);
@@ -17,9 +16,9 @@ export default function WriterPanel() {
 
   const fetchData = async () => {
     try {
-      const genreRes = await api.get('/scripts/genres'); //Backend'den türleri al
+      const genreRes = await api.get('/scripts/genres');
       setAllGenres(genreRes.data);
-      const scriptsRes = await api.get('/scripts/my-scripts'); //Sadece kendi senaryoları
+      const scriptsRes = await api.get('/scripts/my-scripts');
       setMyScripts(scriptsRes.data);}
     catch (err) {
       console.error("Veri yükleme hatası", err);
@@ -30,64 +29,57 @@ export default function WriterPanel() {
     fetchData();
   }, []);
 
-  // --- KAYDET / GÜNCELLE BUTONU ---
   const handleSubmit = async () => {
     if(!title || !price || selectedGenres.length === 0) {
       alert("Lütfen tüm alanları doldurun!");
       return;
     }
 
-    // Backend'in beklediği format (DTO)
     const payload = {
       title,
       content,
-      price: parseFloat(price), //Sayıya çevirir
-      genreIds: selectedGenres.map(id => parseInt(id)) //ID dizisi
+      price: parseFloat(price),
+      genreIds: selectedGenres.map(id => parseInt(id))
     };
 
     try {
-      if (editingId) {
-        // GÜNCELLEME İŞLEMİ (PUT)
+      if (editingId){
         await api.put(`/scripts/${editingId}`, payload);
         alert('Senaryo Güncellendi!');
       } else {
-        // YENİ EKLEME İŞLEMİ (POST)
         await api.post('/scripts', payload);
         alert('Senaryo Eklendi!');
       }
 
-      resetForm(); //Formu temizle
-      fetchData(); //Listeyi yenile ekleme veya güncelleme sonucunu göster.
+      resetForm();
+      fetchData();
     } catch (error) {
       alert('Hata: ' + error.message);
     }
   };
 
-  //Düzenleme modunda formu bilgilerle doldur
+
   const handleEditClick = (script) => {
-    setEditingId(script.id); //Düzenleme modu aç (id kullan)
+    setEditingId(script.id);
     setTitle(script.title);
     setPrice(script.price);
     setContent(script.content);
-    // Mevcut türleri seçili hale getir
     setSelectedGenres(script.genres.map(g => g.id));
 
-    window.scrollTo(0, 0); // Sayfanın en üstüne (forma) kaydır
+    window.scrollTo(0, 0);
   };
 
-  // SİLME İŞLEMİ
   const handleDelete = async (id) => {
     if(!window.confirm("Silmek istediğinize emin misiniz?")) return;
     try {
       await api.delete(`/scripts/${id}`);
       fetchData();
-      if(editingId === id) resetForm(); // Eğer düzenlediğimiz şeyi sildiysek formu da temizle
+      if(editingId === id) resetForm();
     } catch (error) {
       alert("Silinemedi!");
     }
   };
 
-  // Formu sıfırla ve "Yeni Ekleme" moduna dön
   const resetForm = () => {
     setTitle('');
     setPrice('');
@@ -117,7 +109,7 @@ export default function WriterPanel() {
         <input type="number" style={{display:'block', width:'100%', padding: 8, marginBottom: 10}} placeholder="Fiyat (TL)" value={price} onChange={e => setPrice(e.target.value)} />
         <textarea style={{display:'block', width:'100%', padding: 8, marginBottom: 10, height: 60}} placeholder="Kısa Özet" value={content} onChange={e => setContent(e.target.value)} />
 
-        <label style={{fontSize:12, fontWeight:'bold'}}>Türler (CTRL ile çoklu seç):</label> {/* Çoklu Seçim */}
+        <label style={{fontSize:12, fontWeight:'bold'}}>Türler (CTRL ile çoklu seç):</label>
         <select multiple value={selectedGenres} style={{display:'block', width:'100%', height: 80, marginBottom: 10}} onChange={(e) => setSelectedGenres([...e.target.selectedOptions].map(o => o.value))}>
           {allGenres.map(g => <option key={g.id} value={g.id}>{g.name}</option>)}
         </select>
@@ -135,7 +127,7 @@ export default function WriterPanel() {
         </div>
       </div>
 
-      {/* ---SENARYOLARIM LİSTE ALANI--- */}
+
       <h3>Senaryolarım ({myScripts.length})</h3>
       <table style={{width:'100%', borderCollapse:'collapse'}}>
         <thead>
